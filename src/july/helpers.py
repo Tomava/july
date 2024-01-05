@@ -75,7 +75,14 @@ def cal_heatmap(
         )
 
     pc = ax.pcolormesh(cal, edgecolors=ax.get_facecolor(), linewidth=0.25, cmap=cmap)
-    pc.set_clim(cmin or np.nanmin(cal), cmax or np.nanmax(cal))
+
+    if cmin is None:
+        cmin = np.nanmin(cal)
+
+    if cmax is None:
+        cmax = np.nanmax(cal)
+
+    pc.set_clim(cmin, cmax)
     ax.invert_yaxis()
     ax.set_aspect("equal")
     bbox = ax.get_position()
