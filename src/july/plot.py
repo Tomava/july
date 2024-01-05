@@ -225,7 +225,8 @@ def calendar_plot(
     title: bool = True,
     ncols: int = 4,
     figsize: Optional[Tuple[float, float]] = None,
-    uniform_value_scale = False,
+    cmin: Optional[int] = None,
+    cmax: Optional[int] = None,
     **kwargs
 ) -> Axes:
     """Create calendar shaped heatmap of all months im input dates and data.
@@ -244,7 +245,10 @@ def calendar_plot(
         ncols: Number of columns in the calendar plot.
         ax: Matplotlib Axes object.
         figsize: Figure size. Defaults to sensible values determined from 'ncols'.
-        uniform_value_scale: Whether to have the same value scale for the whole plot or individual for each month. Defaults to individual for each month.
+        cmin: Minimum value of the colorbar of the whole plot. Defaults to
+            minimum value of `data`.
+        cmax: Maximum value of the colorbar of the whole plot. Defaults to
+            maximum value of 'data'.
         kwargs: Parameters passed to `update_rcparams`. Figure aesthetics. Named
             keyword arguments as defined in `update_rcparams` or a dict with any
             rcParam as key(s).
@@ -271,9 +275,6 @@ def calendar_plot(
 
     fig, axes = plt.subplots(nrows, ncols, figsize=figsize)
 
-    min_value = np.min(data_clean) if uniform_value_scale else None
-    max_value = np.max(data_clean) if uniform_value_scale else None
-
     for i, year_month in enumerate(year_months):
         month = [day for day in dates_clean if day.strftime("%Y-%m") == year_month]
         vals = [
@@ -292,8 +293,8 @@ def calendar_plot(
             value_format=value_format,
             ax=axes.reshape(-1)[i],
             cal_mode=True,
-            cmin=min_value,
-            cmax=max_value
+            cmin=cmin,
+            cmax=cmax
         )
 
     for ax in axes.reshape(-1)[len(year_months) :]:
